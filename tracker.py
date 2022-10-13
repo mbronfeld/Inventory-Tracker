@@ -31,3 +31,4 @@ def main():
         print("Browser failed to load main page time, check your internet connection")
     reportingTab = browser.find_element(By.PARTIAL_LINK_TEXT, "Transactions")
     reportingTab.click()
+    transactions = browser.find_elements(By.PARTIAL_LINK_TEXT, "Details")
