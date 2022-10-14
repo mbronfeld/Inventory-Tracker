@@ -10,10 +10,14 @@ from selenium.common.exceptions import NoSuchElementException
 import pandas as pd
 
 def main():
-    browser = webdriver.Chrome()
+    
+    options = webdriver.ChromeOptions() 
+    #options.add_argument("--auto-open-devtools-for-tabs")
+    browser = webdriver.Chrome(options=options)
     finalList = []
     delay = 20 #seconds
     browser.get("https://www.clover.com/dashboard/login")
+    #browser.maximize_window()
     try:
         myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.ID, "email-input")))
     except TimeoutException:
@@ -26,9 +30,23 @@ def main():
     logInButton.send_keys()
     logInButton.click()
     try:
-        myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Reporting")))
+        myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Transactions")))
     except TimeoutException:
         print("Browser failed to load main page time, check your internet connection")
     reportingTab = browser.find_element(By.PARTIAL_LINK_TEXT, "Transactions")
     reportingTab.click()
-    transactions = browser.find_elements(By.PARTIAL_LINK_TEXT, "Details")
+    try:
+        #myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, "//*[@id='ember980']/table/tr[4]")))
+        #myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.CLASS_NAME, "c-table-row")))
+        myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Voids")))
+    except TimeoutException:
+        print("Browser failed to load transactions page time, check your internet connection")
+    #browser.key()
+    transactions = browser.find_elements(By.CSS_SELECTOR, '[roll="table"]')
+    print(len(transactions))
+    #for link in transactions:
+        #print(link)
+        #link.send_keys(Keys.CONTROL + 't')
+    sleep(1000)
+
+main()
