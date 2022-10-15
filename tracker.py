@@ -8,8 +8,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
 import re
-from lxml import html, etree
+from bs4 import BeautifulSoup
 import pandas as pd
+
+
 
 def main():
     
@@ -42,19 +44,47 @@ def main():
     except TimeoutException:
         print("Browser failed to load transactions page time, check your internet connection")
     browser.find_element(By.LINK_TEXT, "Payments").click()
-    tree = html.fromstring(browser.page_source)
-    payment_table = tree.xpath("//table")
-    print(payment_table)
+    #try:
+    #    myElem = WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.LINK_TEXT, "Yesterday")))
+    #except TimeoutException:
+    #    print("Browser failed to load transactions page time, check your internet connection")
+    #browser.find_element(By.LINK_TEXT, "Yesterday").click()
+    #sleep(10)
+    #soup = BeautifulSoup(browser.page_source, "html5lib")
+    #print(soup.prettify())
+    #print(soup.find_all("div"))
+    #print(soup.find("iframe"))
+    #print(soup.find("iframe").extract())
+    browser.switch_to.frame(browser.find_element(By.TAG_NAME, "iframe"))
+    try:
+        myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="itemOptions"]')))
+    except TimeoutException:
+        print("Drop down button did not load in time")
+    #sleep(1000)
+    browser.find_element(By.XPATH, '//*[@id="itemOptions"]').click()
+    try:
+        myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember993"]/ul/li[8]')))
+    except TimeoutException:
+        print("Drop down menu did not load in time")
+    browser.find_element(By.XPATH, '//*[@id="ember993"]/ul/li[8]').click()
+    sleep(5)
     try:
         myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember980"]/table')))
     except TimeoutException:
         print("Browser failed to load transactions page time, check your internet connection")
     #browser.key()
-    transactions = browser.find_elements(By.XPATH, '//*[@id="ember980"]/table')
+    transactions = browser.find_elements(By.LINK_TEXT, 'Details')
     print(len(transactions))
-    #for link in transactions:
-        #print(link)
-        #link.send_keys(Keys.CONTROL + 't')
+    for i in range(len(transactions)):
+        browser.execute_script("window.open('');")
+        browser.switch_to.window(browser.window_handles[i + 1])
+        browser.get(transactions[i].get_attribute("href"))
+        browser.switch_to(browser.window_handles[0])
+        #try:
+        #    browser.get(link.get_attribute("href"))
+        #except:
+        #    print("didnt work")
     sleep(1000)
+
 
 main()
