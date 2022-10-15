@@ -7,6 +7,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
+import re
+from lxml import html, etree
 import pandas as pd
 
 def main():
@@ -15,7 +17,7 @@ def main():
     #options.add_argument("--auto-open-devtools-for-tabs")
     browser = webdriver.Chrome(options=options)
     finalList = []
-    delay = 20 #seconds
+    delay = 30 #seconds
     browser.get("https://www.clover.com/dashboard/login")
     #browser.maximize_window()
     try:
@@ -36,13 +38,19 @@ def main():
     reportingTab = browser.find_element(By.PARTIAL_LINK_TEXT, "Transactions")
     reportingTab.click()
     try:
-        #myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, "//*[@id='ember980']/table/tr[4]")))
-        #myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.CLASS_NAME, "c-table-row")))
-        myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Voids")))
+        myElem = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.LINK_TEXT, 'Payments')))
+    except TimeoutException:
+        print("Browser failed to load transactions page time, check your internet connection")
+    browser.find_element(By.LINK_TEXT, "Payments").click()
+    tree = html.fromstring(browser.page_source)
+    payment_table = tree.xpath("//table")
+    print(payment_table)
+    try:
+        myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember980"]/table')))
     except TimeoutException:
         print("Browser failed to load transactions page time, check your internet connection")
     #browser.key()
-    transactions = browser.find_elements(By.CSS_SELECTOR, '[roll="table"]')
+    transactions = browser.find_elements(By.XPATH, '//*[@id="ember980"]/table')
     print(len(transactions))
     #for link in transactions:
         #print(link)
