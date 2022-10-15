@@ -75,15 +75,14 @@ def main():
     #browser.key()
     transactions = browser.find_elements(By.LINK_TEXT, 'Details')
     print(len(transactions))
-    for i in range(len(transactions)):
+    linkList = []
+    for link in transactions:
+        linkList.append(link.get_attribute("href"))
+    #for i in range(len(linkList)):
+    for i in range(10):
         browser.execute_script("window.open('');")
         browser.switch_to.window(browser.window_handles[i + 1])
-        browser.get(transactions[i].get_attribute("href"))
-        browser.switch_to(browser.window_handles[0])
-        #try:
-        #    browser.get(link.get_attribute("href"))
-        #except:
-        #    print("didnt work")
+        browser.get(linkList[i])
     sleep(1000)
 
 
