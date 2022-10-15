@@ -16,12 +16,10 @@ import pandas as pd
 def main():
     
     options = webdriver.ChromeOptions() 
-    #options.add_argument("--auto-open-devtools-for-tabs")
     browser = webdriver.Chrome(options=options)
     finalList = []
     delay = 30 #seconds
     browser.get("https://www.clover.com/dashboard/login")
-    #browser.maximize_window()
     try:
         myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.ID, "email-input")))
     except TimeoutException:
@@ -44,17 +42,6 @@ def main():
     except TimeoutException:
         print("Browser failed to load transactions page time, check your internet connection")
     browser.find_element(By.LINK_TEXT, "Payments").click()
-    #try:
-    #    myElem = WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.LINK_TEXT, "Yesterday")))
-    #except TimeoutException:
-    #    print("Browser failed to load transactions page time, check your internet connection")
-    #browser.find_element(By.LINK_TEXT, "Yesterday").click()
-    #sleep(10)
-    #soup = BeautifulSoup(browser.page_source, "html5lib")
-    #print(soup.prettify())
-    #print(soup.find_all("div"))
-    #print(soup.find("iframe"))
-    #print(soup.find("iframe").extract())
     browser.switch_to.frame(browser.find_element(By.TAG_NAME, "iframe"))
     try:
         myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="itemOptions"]')))
@@ -72,7 +59,6 @@ def main():
         myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember980"]/table')))
     except TimeoutException:
         print("Browser failed to load transactions page time, check your internet connection")
-    #browser.key()
     transactions = browser.find_elements(By.LINK_TEXT, 'Details')
     print(len(transactions))
     linkList = []
