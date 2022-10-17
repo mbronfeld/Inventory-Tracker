@@ -85,18 +85,19 @@ def main():
     browser.switch_to.window(browser.window_handles[0])
     for k in range(len(receiptLinks)):
         browser.execute_script("window.open('');")
-        print(receiptLinks[i])
-        browser.switch_to.window(browser.window_handles[i])
-        browser.get(receiptLinks[i])
+        browser.switch_to.window(browser.window_handles[k + 1])
+        browser.get(receiptLinks[k])
     for l in range(len(receiptLinks)):
-        browser.switch_to.window(browser.window_handles[l])
+        browser.switch_to.window(browser.window_handles[l + 1])
         try:
             myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.CLASS_NAME, 'label')))
         except TimeoutException:
             print("Browser failed to load receipt in time")
         products = browser.find_elements(By.CLASS_NAME, "label")
         for item in products:
-            print(item.text)
+            items = item.text.split("\n")[0].split("\n")
+            print(items)
+            print(items[0])
     sleep(1000)
 
 
