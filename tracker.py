@@ -23,7 +23,7 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
     finalDict = {}
     for prod in productsToSearchFor:
         finalDict[prod] = ""
-    print(finalDict)
+    #print(finalDict)
     options = webdriver.ChromeOptions() 
     browser = webdriver.Chrome(options=options)
     delay = 30 #seconds
@@ -112,11 +112,16 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
                 product = item.find_element(By.CLASS_NAME, "label")
                 items = product.text.split("\n")
                 thing = str(items[0])
+                if thing[-4:-1] == " x ":
+                    thing = thing[:-4]
                 if (thing in productsToSearchFor) and (finalDict[thing] == ""):
-                    finalDict[str(thing)] = str(time)
+                    print(finalDict[thing])
+                    print("found it!")
+                    finalDict[thing] = str(time)
+                    print(finalDict[thing])
             tester = True
-        for key in finalDict:
-            if finalDict[key] == "":
+        for value in finalDict.values():
+            if value == "":
                 tester = False
         if tester:
             breakSwitch = True
