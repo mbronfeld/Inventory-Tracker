@@ -12,9 +12,20 @@ import pandas as pd
 
 
 def main():
+    print("""
+WELCOME TO THE PRODUCT SALES TRACKER. MY GOAL WITH THIS PROJECT IS TO FIND OUT WHEN WE SELL OUT OF AN ITEM.
+
+IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS IN CLOVER!!!
+    
+    """)
+    vape = input("Please enter the products you want to search for, separate by a comma and a space: ")
+    productsToSearchFor = vape.split(", ")
+    finalDict = {}
+    for prod in productsToSearchFor:
+        finalDict[prod] = ""
+    print(finalDict)
     options = webdriver.ChromeOptions() 
     browser = webdriver.Chrome(options=options)
-    finalList = []
     delay = 30 #seconds
     browser.get("https://www.clover.com/dashboard/login")
     try:
@@ -40,6 +51,7 @@ def main():
         print("Browser failed to load transactions page time, check your internet connection")
     browser.find_element(By.LINK_TEXT, "Payments").click()
     browser.switch_to.frame(browser.find_element(By.TAG_NAME, "iframe"))
+    browser.find_element(By.LINK_TEXT, "Yesterday").click()
     try:
         myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="itemOptions"]')))
     except TimeoutException:
@@ -57,49 +69,63 @@ def main():
     except TimeoutException:
         print("Browser failed to load transactions page in time, check your internet connection")
     transactions = browser.find_elements(By.LINK_TEXT, 'Details')
-    print(len(transactions))
     linkList = []
     for link in transactions:
         linkList.append(link.get_attribute("href"))
-    #for i in range(len(linkList)):
-    for i in range(50):
-        browser.execute_script("window.open('');")
-        browser.switch_to.window(browser.window_handles[i + 1])
-        browser.get(linkList[i])
-    receiptLinks = []
-    for j in range(1, 51):
-        browser.switch_to.window(browser.window_handles[j])
-        try:
-            myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.TAG_NAME, "iframe")))
-        except TimeoutException:
-            print("Browser failed to transaction in time, check your internet connection")
-        browser.switch_to.frame(browser.find_element(By.TAG_NAME, "iframe"))
-        try:
-            myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember345"]/div[2]/div[3]/div[2]/div[1]/section/p[4]/a')))
-        except TimeoutException:
-            print("Browser failed to transaction in time, check your internet connection")
-        receiptLinks.append(browser.find_element(By.XPATH, '//*[@id="ember345"]/div[2]/div[3]/div[2]/div[1]/section/p[4]/a').get_attribute("href"))
-    while (len(browser.window_handles) > 1):
-        browser.switch_to.window(browser.window_handles[1])
-        browser.close()
-    browser.switch_to.window(browser.window_handles[0])
-    for k in range(len(receiptLinks)):
-        browser.execute_script("window.open('');")
-        browser.switch_to.window(browser.window_handles[k + 1])
-        browser.get(receiptLinks[k])
-    for l in range(len(receiptLinks)):
-        browser.switch_to.window(browser.window_handles[l + 1])
-        try:
-            myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.CLASS_NAME, 'line-item')))
-        except TimeoutException:
-            print("Browser failed to load receipt in time")
-        products = browser.find_elements(By.CLASS_NAME, "line-item")
-        time = browser.find_element(By.CLASS_NAME, "time").text
-        for item in products:
-            product = item.find_element(By.CLASS_NAME, "label")
-            items = product.text.split("\n")
-            print(str(items[0]) + " at " + time)
-    sleep(1000)
+    breakSwitch = False
+    while not breakSwitch:
+        browser.switch_to.window(browser.window_handles[0])
+        for i in range(10):
+            browser.execute_script("window.open('');")
+            browser.switch_to.window(browser.window_handles[i + 1])
+            browser.get(linkList[i])
+        receiptLinks = []
+        for j in range(1, 11):
+            browser.switch_to.window(browser.window_handles[j])
+            try:
+                myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.TAG_NAME, "iframe")))
+            except TimeoutException:
+                print("Browser failed to transaction in time, check your internet connection")
+            browser.switch_to.frame(browser.find_element(By.TAG_NAME, "iframe"))
+            try:
+                myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember345"]/div[2]/div[3]/div[2]/div[1]/section/p[4]/a')))
+            except TimeoutException:
+                print("Browser failed to transaction in time, check your internet connection")
+            receiptLinks.append(browser.find_element(By.XPATH, '//*[@id="ember345"]/div[2]/div[3]/div[2]/div[1]/section/p[4]/a').get_attribute("href"))
+        while (len(browser.window_handles) > 1):
+            browser.switch_to.window(browser.window_handles[1])
+            browser.close()
+        browser.switch_to.window(browser.window_handles[0])
+        for k in range(len(receiptLinks)):
+            browser.execute_script("window.open('');")
+            browser.switch_to.window(browser.window_handles[k + 1])
+            browser.get(receiptLinks[k])
+        for l in range(len(receiptLinks)):
+            browser.switch_to.window(browser.window_handles[l + 1])
+            try:
+                myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.CLASS_NAME, 'line-item')))
+            except TimeoutException:
+                print("Browser failed to load receipt in time")
+            products = browser.find_elements(By.CLASS_NAME, "line-item")
+            time = browser.find_element(By.CLASS_NAME, "time").text
+            for item in products:
+                product = item.find_element(By.CLASS_NAME, "label")
+                items = product.text.split("\n")
+                thing = str(items[0])
+                if (thing in productsToSearchFor) and (finalDict[thing] == ""):
+                    finalDict[str(thing)] = str(time)
+            tester = True
+        for key in finalDict:
+            if finalDict[key] == "":
+                tester = False
+        if tester:
+            breakSwitch = True
+        else:
+            del linkList[:10]
+            while (len(browser.window_handles) > 1):
+                browser.switch_to.window(browser.window_handles[1])
+                browser.close()
+    print(finalDict)
 
 
 main()
