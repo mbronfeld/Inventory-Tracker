@@ -118,7 +118,7 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
                     print(finalDict[thing])
                     print("found it!")
                     finalDict[thing] = str(time)
-                    print(finalDict[thing])
+                    print(thing + " at " + finalDict[thing])
             tester = True
         for value in finalDict.values():
             if value == "":
