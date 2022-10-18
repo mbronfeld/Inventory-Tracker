@@ -75,6 +75,16 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
     breakSwitch = False
     while not breakSwitch:
         browser.switch_to.window(browser.window_handles[0])
+        if (len(linkList) == 0):
+            print("going to next")
+            browser.find_element(By.XPATH, '//*[@id="ember1003"]/button[2]').click()
+            try:
+                myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember980"]/table')))
+            except TimeoutException:
+                print("Browser failed to load transactions page in time, check your internet connection")
+            transactions = browser.find_elements(By.LINK_TEXT, 'Details')
+            for link in transactions:
+                linkList.append(link.get_attribute("href"))
         for i in range(10):
             browser.execute_script("window.open('');")
             browser.switch_to.window(browser.window_handles[i + 1])
@@ -85,13 +95,15 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
             try:
                 myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.TAG_NAME, "iframe")))
             except TimeoutException:
-                print("Browser failed to transaction in time, check your internet connection")
+                print("Browser failed to load transactions in time, check your internet connection")
             browser.switch_to.frame(browser.find_element(By.TAG_NAME, "iframe"))
             try:
                 myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember345"]/div[2]/div[3]/div[2]/div[1]/section/p[4]/a')))
+                receiptLinks.append(browser.find_element(By.XPATH, '//*[@id="ember345"]/div[2]/div[3]/div[2]/div[1]/section/p[4]/a').get_attribute("href"))
             except TimeoutException:
-                print("Browser failed to transaction in time, check your internet connection")
-            receiptLinks.append(browser.find_element(By.XPATH, '//*[@id="ember345"]/div[2]/div[3]/div[2]/div[1]/section/p[4]/a').get_attribute("href"))
+                print("Browser failed to load transaction in time, check your internet connection")
+            except NoSuchElementException:
+                print("Failed transaction skipped")
         while (len(browser.window_handles) > 1):
             browser.switch_to.window(browser.window_handles[1])
             browser.close()
@@ -131,6 +143,7 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
                 browser.switch_to.window(browser.window_handles[1])
                 browser.close()
     print(finalDict)
+    sleep(1000)
 
 
 main()
