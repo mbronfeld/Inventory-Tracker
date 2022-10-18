@@ -90,14 +90,16 @@ def main():
     for l in range(len(receiptLinks)):
         browser.switch_to.window(browser.window_handles[l + 1])
         try:
-            myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.CLASS_NAME, 'label')))
+            myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.CLASS_NAME, 'line-item')))
         except TimeoutException:
             print("Browser failed to load receipt in time")
-        products = browser.find_elements(By.CLASS_NAME, "label")
+        products = browser.find_elements(By.CLASS_NAME, "line-item")
         for item in products:
-            items = item.text.split("\n")[0].split("\n")
-            print(items)
-            print(items[0])
+            product = item.find_element(By.CLASS_NAME, "label")
+            #items = item.text.split("\n")[0].split("\n")
+            items = product.text.split("\n")
+            #print("items: " + str(items))
+            print("items[0]: " + str(items[0]))
     sleep(1000)
 
 
