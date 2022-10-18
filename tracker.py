@@ -62,12 +62,12 @@ def main():
     for link in transactions:
         linkList.append(link.get_attribute("href"))
     #for i in range(len(linkList)):
-    for i in range(10):
+    for i in range(50):
         browser.execute_script("window.open('');")
         browser.switch_to.window(browser.window_handles[i + 1])
         browser.get(linkList[i])
     receiptLinks = []
-    for j in range(1, 11):
+    for j in range(1, 51):
         browser.switch_to.window(browser.window_handles[j])
         try:
             myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.TAG_NAME, "iframe")))
@@ -94,12 +94,11 @@ def main():
         except TimeoutException:
             print("Browser failed to load receipt in time")
         products = browser.find_elements(By.CLASS_NAME, "line-item")
+        time = browser.find_element(By.CLASS_NAME, "time").text
         for item in products:
             product = item.find_element(By.CLASS_NAME, "label")
-            #items = item.text.split("\n")[0].split("\n")
             items = product.text.split("\n")
-            #print("items: " + str(items))
-            print("items[0]: " + str(items[0]))
+            print(str(items[0]) + " at " + time)
     sleep(1000)
 
 
