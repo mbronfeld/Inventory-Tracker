@@ -77,6 +77,7 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
         browser.switch_to.window(browser.window_handles[0])
         if (len(linkList) == 0):
             print("going to next")
+            browser.switch_to.frame(browser.find_element(By.TAG_NAME, "iframe"))
             browser.find_element(By.XPATH, '//*[@id="ember1003"]/button[2]').click()
             try:
                 myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember980"]/table')))
@@ -85,6 +86,7 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
             transactions = browser.find_elements(By.LINK_TEXT, 'Details')
             for link in transactions:
                 linkList.append(link.get_attribute("href"))
+        browser.switch_to.window(browser.window_handles[0])
         for i in range(10):
             browser.execute_script("window.open('');")
             browser.switch_to.window(browser.window_handles[i + 1])
@@ -143,7 +145,5 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
                 browser.switch_to.window(browser.window_handles[1])
                 browser.close()
     print(finalDict)
-    sleep(1000)
-
 
 main()
