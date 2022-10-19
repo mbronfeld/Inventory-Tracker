@@ -51,7 +51,7 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
         print("Browser failed to load transactions page time, check your internet connection")
     browser.find_element(By.LINK_TEXT, "Payments").click()
     browser.switch_to.frame(browser.find_element(By.TAG_NAME, "iframe"))
-    browser.find_element(By.LINK_TEXT, "Yesterday").click()
+    #browser.find_element(By.LINK_TEXT, "Yesterday").click()
     try:
         myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="itemOptions"]')))
     except TimeoutException:
