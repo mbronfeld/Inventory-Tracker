@@ -57,18 +57,19 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
     except TimeoutException:
         print("Drop down button did not load in time")
     #sleep(1000)
-    browser.find_element(By.XPATH, '//*[@id="itemOptions"]').click()
-    try:
-        myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember993"]/ul/li[8]')))
-    except TimeoutException:
-        print("Drop down menu did not load in time")
-    browser.find_element(By.XPATH, '//*[@id="ember993"]/ul/li[8]').click()
+    #browser.find_element(By.XPATH, '//*[@id="itemOptions"]').click()
+    #try:
+    #    myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember993"]/ul/li[8]')))
+    #except TimeoutException:
+    #    print("Drop down menu did not load in time")
+    #browser.find_element(By.XPATH, '//*[@id="ember993"]/ul/li[8]').click()
     sleep(5)
     try:
         myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember980"]/table')))
     except TimeoutException:
         print("Browser failed to load transactions page in time, check your internet connection")
     transactions = browser.find_elements(By.LINK_TEXT, 'Details')
+    print(len(transactions))
     linkList = []
     for link in transactions:
         linkList.append(link.get_attribute("href"))
@@ -76,7 +77,7 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
     while not breakSwitch:
         browser.switch_to.window(browser.window_handles[0])
         if (len(linkList) == 0):
-            print("going to next")
+            #print("going to next")
             browser.switch_to.frame(browser.find_element(By.TAG_NAME, "iframe"))
             browser.find_element(By.XPATH, '//*[@id="ember1003"]/button[2]').click()
             try:
