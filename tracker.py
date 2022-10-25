@@ -8,8 +8,16 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
 import pandas as pd
+from datetime import date
 
 
+"""TODO:
+    Get times working with date (Hit clear button and then you can type it in)"""
+
+def getDate():
+    today = str(date.today()).split("-")
+    formatted = today[1] + today[2] + today[0] + "200A"
+    return formatted
 
 def main():
     print("""
@@ -26,7 +34,7 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
     #print(finalDict)
     options = webdriver.ChromeOptions() 
     browser = webdriver.Chrome(options=options)
-    delay = 30 #seconds
+    delay = 100 #seconds
     browser.get("https://www.clover.com/dashboard/login")
     try:
         myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.ID, "email-input")))
@@ -52,6 +60,9 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
     browser.find_element(By.LINK_TEXT, "Payments").click()
     browser.switch_to.frame(browser.find_element(By.TAG_NAME, "iframe"))
     browser.find_element(By.LINK_TEXT, "Yesterday").click()
+    endDate = browser.find_element(By.XPATH, '//*[@id="endDate-2"]')
+    endDate.click()
+    endDate.send_keys(getDate())
     try:
         myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="itemOptions"]')))
     except TimeoutException:
@@ -63,7 +74,7 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
     #except TimeoutException:
     #    print("Drop down menu did not load in time")
     #browser.find_element(By.XPATH, '//*[@id="ember993"]/ul/li[8]').click()
-    sleep(5)
+    #sleep(5)
     try:
         myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember980"]/table')))
     except TimeoutException:
@@ -148,3 +159,4 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
     print(finalDict)
 
 main()
+#getDate()
