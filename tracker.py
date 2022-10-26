@@ -17,7 +17,7 @@ def getDate():
 
 def main():
     print("""
-WELCOME TO THE PRODUCT SALES TRACKER. MY GOAL WITH THIS PROJECT IS TO FIND OUT WHEN WE SELL OUT OF AN ITEM.
+Welcome to the product sales tracker. My goal with this project is to find out when we sell out of specific items.
 
 IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS IN CLOVER!!!
     
@@ -27,13 +27,13 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
     finalDict = {}
     for prod in productsToSearchFor:
         finalDict[prod] = ""
-    #print(finalDict)
+    print(finalDict)
     options = webdriver.ChromeOptions() 
     browser = webdriver.Chrome(options=options)
-    delay = 100 #seconds
+    delay = 30 #seconds
     browser.get("https://www.clover.com/dashboard/login")
     try:
-        myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.ID, "email-input")))
+        myElem = WebDriverWait(browser, 100).until(EC.presence_of_element_located((By.ID, "email-input")))
     except TimeoutException:
         print("Browser failed to load log-in page in time, check your internet connection")
     emailSection = browser.find_element(By.ID, "email-input")
@@ -44,7 +44,7 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
     logInButton.send_keys()
     logInButton.click()
     try:
-        myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Transactions")))
+        myElem = WebDriverWait(browser, 100).until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Transactions")))
     except TimeoutException:
         print("Browser failed to load main page time, check your internet connection")
     reportingTab = browser.find_element(By.PARTIAL_LINK_TEXT, "Transactions")
@@ -56,22 +56,12 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
     browser.find_element(By.LINK_TEXT, "Payments").click()
     browser.switch_to.frame(browser.find_element(By.TAG_NAME, "iframe"))
     browser.find_element(By.LINK_TEXT, "Yesterday").click()
+
     sleep(1)
     endDate = browser.find_element(By.XPATH, '//*[@id="endDate-2"]')
     endDate.click()
     endDate.send_keys(getDate())
-    try:
-        myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="itemOptions"]')))
-    except TimeoutException:
-        print("Drop down button did not load in time")
-    #sleep(1000)
-    #browser.find_element(By.XPATH, '//*[@id="itemOptions"]').click()
-    #try:
-    #    myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember993"]/ul/li[8]')))
-    #except TimeoutException:
-    #    print("Drop down menu did not load in time")
-    #browser.find_element(By.XPATH, '//*[@id="ember993"]/ul/li[8]').click()
-    #sleep(5)
+    sleep(1)
     try:
         myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember980"]/table')))
     except TimeoutException:
@@ -96,7 +86,7 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
             for link in transactions:
                 linkList.append(link.get_attribute("href"))
         browser.switch_to.window(browser.window_handles[0])
-        for i in range(10):
+        for i in range(len(linkList)):
             browser.execute_script("window.open('');")
             browser.switch_to.window(browser.window_handles[i + 1])
             browser.get(linkList[i])
@@ -112,7 +102,7 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
                 myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember345"]/div[2]/div[3]/div[2]/div[1]/section/p[4]/a')))
                 receiptLinks.append(browser.find_element(By.XPATH, '//*[@id="ember345"]/div[2]/div[3]/div[2]/div[1]/section/p[4]/a').get_attribute("href"))
             except TimeoutException:
-                print("Browser failed to load transaction in time, check your internet connection")
+                print("Failed transaction skipped")
             except NoSuchElementException:
                 print("Failed transaction skipped")
         while (len(browser.window_handles) > 1):
@@ -149,11 +139,13 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
         if tester:
             breakSwitch = True
         else:
-            del linkList[:10]
+            try:
+                del linkList[:10]
+            except IndexError:
+                print("end of day")
             while (len(browser.window_handles) > 1):
                 browser.switch_to.window(browser.window_handles[1])
                 browser.close()
     print(finalDict)
 
 main()
-#getDate()
