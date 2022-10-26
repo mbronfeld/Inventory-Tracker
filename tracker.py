@@ -67,14 +67,6 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
         myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="itemOptions"]')))
     except TimeoutException:
         print("Drop down button did not load in time")
-    #sleep(1000)
-    #browser.find_element(By.XPATH, '//*[@id="itemOptions"]').click()
-    #try:
-    #    myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember993"]/ul/li[8]')))
-    #except TimeoutException:
-    #    print("Drop down menu did not load in time")
-    #browser.find_element(By.XPATH, '//*[@id="ember993"]/ul/li[8]').click()
-    #sleep(5)
     try:
         myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember980"]/table')))
     except TimeoutException:
@@ -159,4 +151,3 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
     print(finalDict)
 
 main()
-#getDate()
