@@ -10,6 +10,9 @@ from selenium.common.exceptions import NoSuchElementException
 import pandas as pd
 from datetime import date
 
+#Croissant Butter, Croissant Chocolate, Croissant Almond, Croissant Ham And Cheddar, Muffin Blueberry, Muffin Morning Glory, Cookie Chocolate Chip, Scone Blueberry, Scone Chocolate Chip, Scone Orange Cranberry, Scone Maple Walnut, Scone Cheese And Cheddar, Coffee Cake, Bread Pumpkin, Cinnamon Bun, Pumpkin Cruffin
+
+
 def getDate():
     today = str(date.today()).split("-")
     formatted = today[1] + today[2] + today[0] + "200A"
