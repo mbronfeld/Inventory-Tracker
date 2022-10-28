@@ -8,10 +8,15 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
 import pandas as pd
-from datetime import date
+from datetime import date, timedelta
 
 #Croissant Butter, Croissant Chocolate, Croissant Almond, Croissant Ham And Cheddar, Muffin Blueberry, Muffin Morning Glory, Cookie Chocolate Chip, Scone Blueberry, Scone Chocolate Chip, Scone Orange Cranberry, Scone Maple Walnut, Scone Cheese And Cheddar, Coffee Cake, Bread Pumpkin, Cinnamon Bun, Pumpkin Cruffin
 
+def getStart():
+    today = date.today()
+    yesterday = str(today - timedelta(days = 1)).split("-")
+    formatted = yesterday[1] + yesterday[2] + yesterday[0] + "800A"
+    return formatted
 
 def getDate():
     today = str(date.today()).split("-")
@@ -35,6 +40,7 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
     browser = webdriver.Chrome(options=options)
     delay = 30 #seconds
     browser.get("https://www.clover.com/dashboard/login")
+    browser.maximize_window()
     try:
         myElem = WebDriverWait(browser, 100).until(EC.presence_of_element_located((By.ID, "email-input")))
     except TimeoutException:
@@ -66,10 +72,13 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
         print("drop down failed")
     browser.find_element(By.XPATH, '//*[@id="ember993"]/ul/li[2]').click()
     sleep(1)
-    endDate = browser.find_element(By.XPATH, '//*[@id="endDate-2"]')
+    startDate = browser.find_element(By.XPATH, '//*[@id="ember904"]/section/div[2]/div/div[1]/label')
+    startDate.click()
+    browser.find_element(By.XPATH, '//*[@id="startDate-1"]').send_keys(getStart())
+    endDate = browser.find_element(By.XPATH, '//*[@id="ember904"]/section/div[2]/div/div[2]/label')
     endDate.click()
-    endDate.send_keys(getDate())
-    sleep(1)
+    browser.find_element(By.XPATH, '//*[@id="endDate-2"]').send_keys(getDate())
+    sleep(2)
     try:
         myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember980"]/table')))
     except TimeoutException:
@@ -135,11 +144,12 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
                 thing = str(items[0])
                 if thing[-4:-1] == " x ":
                     thing = thing[:-4]
-                if (thing in productsToSearchFor) and (finalDict[thing] == ""):
+                if (thing in productsToSearchFor):
                     print(finalDict[thing])
                     print("found it!")
                     finalDict[thing] = str(time)
                     print(thing + " at " + finalDict[thing])
+                    productsToSearchFor.remove(thing)
             tester = True
         for value in finalDict.values():
             if value == "":
@@ -147,10 +157,7 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
         if tester:
             breakSwitch = True
         else:
-            try:
-                del linkList[:10]
-            except IndexError:
-                print("end of day")
+            del linkList[:10]
             while (len(browser.window_handles) > 1):
                 browser.switch_to.window(browser.window_handles[1])
                 browser.close()
