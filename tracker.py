@@ -38,7 +38,7 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
     print(finalDict)
     options = webdriver.ChromeOptions() 
     browser = webdriver.Chrome(options=options)
-    delay = 30 #seconds
+    delay = 100 #seconds
     browser.get("https://www.clover.com/dashboard/login")
     browser.maximize_window()
     try:
@@ -109,7 +109,12 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
             browser.get(linkList[i])
         receiptLinks = []
         for j in range(1, 11):
-            browser.switch_to.window(browser.window_handles[j])
+            try:
+                browser.switch_to.window(browser.window_handles[j])
+            except IndexError:
+                print("end of day")
+                print(finalDict)
+                breakSwitch = True
             try:
                 myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.TAG_NAME, "iframe")))
             except TimeoutException:
