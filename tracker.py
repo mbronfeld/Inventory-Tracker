@@ -7,10 +7,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
-import pandas as pd
-from datetime import date, timedelta
+from datetime import date, timedelta, time
+import matplotlib.pyplot as plt
 
-#Croissant Butter, Croissant Chocolate, Croissant Almond, Croissant Ham And Cheddar, Muffin Blueberry, Muffin Morning Glory, Cookie Chocolate Chip, Scone Blueberry, Scone Chocolate Chip, Scone Orange Cranberry, Scone Maple Walnut, Scone Cheese And Cheddar, Coffee Cake, Bread Pumpkin, Cinnamon Bun, Pumpkin Cruffin
+#Croissant Butter, Croissant Chocolate, Croissant Almond, Croissant Ham And Cheddar, Muffin Blueberry, Muffin Morning Glory, Cookie Chocolate Chip, Scone Blueberry, Coffee Cake, Cinnamon Bun, Scone Cheese and Cheddar, Scone Chocolate Chip, Bread Pumpkin, Pumpkin Cruffin
+
+#TODO: plotting
+
 
 def getStart():
     today = date.today()
@@ -23,14 +26,34 @@ def getDate():
     formatted = today[1] + today[2] + today[0] + "200A"
     return formatted
 
-def main():
+def graph(finalDict):
+    pastries = []
+    for item in finalDict:
+        pastries.append(item)
+    times = finalDict.values()
+    timeList = []
+    for t in times:
+        hours_minutes = t[:-3]
+        t_list = hours_minutes.split(":")
+        if (t[-2:] == "pm"):
+            t_list[0] = str(int(t_list[0]) + 12)
+        timeList.append(time(int(t_list[0]), int(t_list[1]), 0))
+    for i in range(len(timeList)):
+        print(pastries[i])
+        print(timeList[i])
+
+
+
+def getTimes():
     print("""
 Welcome to the product sales tracker. My goal with this project is to find out when we sell out of specific items.
 
 IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS IN CLOVER!!!
     
     """)
-    vape = input("Please enter the products you want to search for, separate by a comma and a space: ")
+    print("Please enter the products you want to search for, separate by a comma and a space: ")
+    print()
+    vape = input()
     productsToSearchFor = vape.split(", ")
     finalDict = {}
     for prod in productsToSearchFor:
@@ -92,7 +115,7 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
     while not breakSwitch:
         browser.switch_to.window(browser.window_handles[0])
         if (len(linkList) == 0):
-            #print("going to next")
+            #linkVerifier = False
             browser.switch_to.frame(browser.find_element(By.TAG_NAME, "iframe"))
             browser.find_element(By.XPATH, '//*[@id="ember1003"]/button[2]').click()
             try:
@@ -166,6 +189,12 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
             while (len(browser.window_handles) > 1):
                 browser.switch_to.window(browser.window_handles[1])
                 browser.close()
-    print(finalDict)
+    return finalDict
+    
+
+def main():
+    #final = getTimes()
+    final = {'Croissant Butter': '8:35 pm', 'Croissant Chocolate': '3:09 pm', 'Croissant Almond': '5:45 pm', 'Croissant Ham And Cheddar': '5:09 pm', 'Muffin Blueberry': '5:14 pm', 'Muffin Morning Glory': '11:43 pm', 'Cookie Chocolate Chip': '1:35 pm', 'Scone Blueberry': '11:05 pm', 'Coffee Cake': '11:52 pm', 'Cinnamon Bun': '10:06 pm', 'Scone Cheese and Cheddar': '3:40 pm', 'Scone Chocolate Chip': '10:28 pm', 'Bread Pumpkin': '2:25 pm', 'Pumpkin Cruffin': '4:15 pm'}
+    graph(final)
 
 main()
