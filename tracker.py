@@ -9,6 +9,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
 from datetime import date, timedelta, time
 import matplotlib.pyplot as plt
+import numpy as np
 
 #Croissant Butter, Croissant Chocolate, Croissant Almond, Croissant Ham And Cheddar, Muffin Blueberry, Muffin Morning Glory, Cookie Chocolate Chip, Scone Blueberry, Coffee Cake, Cinnamon Bun, Scone Cheese and Cheddar, Scone Chocolate Chip, Bread Pumpkin, Pumpkin Cruffin
 
@@ -38,10 +39,23 @@ def graph(finalDict):
         if (t[-2:] == "pm"):
             t_list[0] = str(int(t_list[0]) + 12)
         timeList.append(time(int(t_list[0]), int(t_list[1]), 0))
-    for i in range(len(timeList)):
-        print(pastries[i])
-        print(timeList[i])
-
+    hours = [8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1]
+    hourPrinter = ""
+    lines = ""
+    for i in range(72):
+        addSpace = True
+        if (i % 4) == 0:
+            lines += "|"
+            hourPrinter += str(hours[i//4])
+            if i//4 in [2, 3, 4, 14, 15, 16]:
+                addSpace = False
+        lines += "-"
+        if addSpace:
+            hourPrinter += " "
+    lines += "|"
+    hourPrinter += "2"
+    print(lines)
+    print(hourPrinter)
 
 
 def getTimes():
