@@ -12,6 +12,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 #Croissant Butter, Croissant Chocolate, Croissant Almond, Croissant Ham And Cheddar, Muffin Blueberry, Muffin Morning Glory, Cookie Chocolate Chip, Scone Blueberry, Coffee Cake, Cinnamon Bun, Scone Cheese and Cheddar, Scone Chocolate Chip, Bread Pumpkin, Pumpkin Cruffin
+#Croissant Butter, Croissant Chocolate, Croissant Almond, Croissant Ham And Cheddar, Muffin Blueberry, Muffin Morning Glory, Cookie Chocolate Chip, Scone Blueberry, Cinnamon Bun, Scone Cheese and Cheddar, Scone Chocolate Chip, Bread Pumpkin, Pumpkin Cruffin
+
 
 #TODO: plotting
 
@@ -207,8 +209,9 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
     
 
 def main():
-    #final = getTimes()
-    final = {'Croissant Butter': '8:35 pm', 'Croissant Chocolate': '3:09 pm', 'Croissant Almond': '5:45 pm', 'Croissant Ham And Cheddar': '5:09 pm', 'Muffin Blueberry': '5:14 pm', 'Muffin Morning Glory': '11:43 pm', 'Cookie Chocolate Chip': '1:35 pm', 'Scone Blueberry': '11:05 pm', 'Coffee Cake': '11:52 pm', 'Cinnamon Bun': '10:06 pm', 'Scone Cheese and Cheddar': '3:40 pm', 'Scone Chocolate Chip': '10:28 pm', 'Bread Pumpkin': '2:25 pm', 'Pumpkin Cruffin': '4:15 pm'}
-    graph(final)
+    final = getTimes()
+    print(final)
+    #final = {'Croissant Butter': '8:35 pm', 'Croissant Chocolate': '3:09 pm', 'Croissant Almond': '5:45 pm', 'Croissant Ham And Cheddar': '5:09 pm', 'Muffin Blueberry': '5:14 pm', 'Muffin Morning Glory': '11:43 pm', 'Cookie Chocolate Chip': '1:35 pm', 'Scone Blueberry': '11:05 pm', 'Coffee Cake': '11:52 pm', 'Cinnamon Bun': '10:06 pm', 'Scone Cheese and Cheddar': '3:40 pm', 'Scone Chocolate Chip': '10:28 pm', 'Bread Pumpkin': '2:25 pm', 'Pumpkin Cruffin': '4:15 pm'}
+    #graph(final)
 
 main()
