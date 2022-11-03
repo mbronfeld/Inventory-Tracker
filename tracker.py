@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
 from datetime import date, timedelta, time
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import numpy as np
 
 #Croissant Butter, Croissant Chocolate, Croissant Almond, Croissant Ham And Cheddar, Muffin Blueberry, Muffin Morning Glory, Cookie Chocolate Chip, Scone Blueberry, Coffee Cake, Cinnamon Bun, Scone Cheese and Cheddar, Scone Chocolate Chip, Bread Pumpkin, Pumpkin Cruffin
