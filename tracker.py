@@ -106,7 +106,7 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
     browser.find_element(By.LINK_TEXT, "Yesterday").click()
     browser.find_element(By.XPATH, '//*[@id="itemOptions"]').click()
     try:
-        myElem = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember988"]/ul/li[2]')))
+        myElem = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember993"]/ul/li[2]')))
     except TimeoutException:
         print("drop down failed")
     browser.find_element(By.XPATH, '//*[@id="ember993"]/ul/li[2]').click()
