@@ -11,8 +11,10 @@ from datetime import date, timedelta, time
 #import matplotlib.pyplot as plt
 import numpy as np
 
-#Croissant Butter, Croissant Chocolate, Croissant Almond, Muffin Blueberry, Muffin Morning Glory, Cookie Chocolate Chip, Scone Maple Walnut, Coffee Cake, Scone Cheese and Cheddar, Scone Chocolate Chip, Bread Pumpkin, Pumpkin Cruffin
-#Croissant Chocolate, Croissant Almond, Muffin Morning Glory, Cookie Chocolate Chip, Scone Blueberry, Scone Maple Walnut, Cinnamon Bun
+#Croissant Butter, Croissant Chocolate, Croissant Almond, Croissant Ham And Cheddar, Muffin Blueberry, Muffin Morning Glory, Cookie Chocolate Chip, Scone Blueberry, Coffee Cake, Cinnamon Bun, Scone Cheese and Cheddar, Scone Chocolate Chip, Bread Pumpkin, Pumpkin Cruffin
+#Croissant Butter, Croissant Chocolate, Croissant Almond, Croissant Ham And Cheddar, Muffin Blueberry, Muffin Morning Glory, Cookie Chocolate Chip, Scone Blueberry, Cinnamon Bun, Scone Cheese and Cheddar, Scone Chocolate Chip, Bread Pumpkin, Pumpkin Cruffin
+
+
 #TODO: plotting
 
 
