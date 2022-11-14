@@ -11,10 +11,8 @@ from datetime import date, timedelta, time
 #import matplotlib.pyplot as plt
 import numpy as np
 
-#Croissant Butter, Croissant Chocolate, Croissant Almond, Croissant Ham And Cheddar, Muffin Blueberry, Muffin Morning Glory, Cookie Chocolate Chip, Scone Blueberry, Coffee Cake, Cinnamon Bun, Scone Cheese and Cheddar, Scone Chocolate Chip, Bread Pumpkin, Pumpkin Cruffin
-#Croissant Butter, Croissant Chocolate, Croissant Almond, Croissant Ham And Cheddar, Muffin Blueberry, Muffin Morning Glory, Cookie Chocolate Chip, Scone Blueberry, Cinnamon Bun, Scone Cheese and Cheddar, Scone Chocolate Chip, Bread Pumpkin, Pumpkin Cruffin
-
-
+#Croissant Butter, Croissant Chocolate, Croissant Almond, Muffin Blueberry, Muffin Morning Glory, Cookie Chocolate Chip, Scone Maple Walnut, Coffee Cake, Scone Cheese and Cheddar, Scone Chocolate Chip, Bread Pumpkin, Pumpkin Cruffin
+#Croissant Chocolate, Croissant Almond, Muffin Morning Glory, Cookie Chocolate Chip, Scone Blueberry, Scone Maple Walnut, Cinnamon Bun
 #TODO: plotting
 
 
@@ -79,7 +77,7 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
     browser = webdriver.Chrome(options=options)
     delay = 100 #seconds
     browser.get("https://www.clover.com/dashboard/login")
-    browser.maximize_window()
+    #browser.maximize_window()
     try:
         myElem = WebDriverWait(browser, 100).until(EC.presence_of_element_located((By.ID, "email-input")))
     except TimeoutException:
@@ -104,12 +102,6 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
     browser.find_element(By.LINK_TEXT, "Payments").click()
     browser.switch_to.frame(browser.find_element(By.TAG_NAME, "iframe"))
     browser.find_element(By.LINK_TEXT, "Yesterday").click()
-    browser.find_element(By.XPATH, '//*[@id="itemOptions"]').click()
-    try:
-        myElem = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember993"]/ul/li[2]')))
-    except TimeoutException:
-        print("drop down failed")
-    browser.find_element(By.XPATH, '//*[@id="ember993"]/ul/li[2]').click()
     sleep(1)
     startDate = browser.find_element(By.XPATH, '//*[@id="ember904"]/section/div[2]/div/div[1]/label')
     startDate.click()
@@ -117,13 +109,19 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
     endDate = browser.find_element(By.XPATH, '//*[@id="ember904"]/section/div[2]/div/div[2]/label')
     endDate.click()
     browser.find_element(By.XPATH, '//*[@id="endDate-2"]').send_keys(getDate())
-    sleep(2)
+    sleep(5)
+    browser.find_element(By.XPATH, '//*[@id="itemOptions-content"]').click()
     try:
-        myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember980"]/table')))
+        myElem = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember995"]/ul/li[2]/a')))
+    except TimeoutException:
+        print("drop down failed")
+    browser.find_element(By.XPATH, '//*[@id="ember995"]/ul/li[2]/a').click()
+    sleep(5)
+    try:
+        myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember982"]/table')))
     except TimeoutException:
         print("Browser failed to load transactions page in time, check your internet connection")
     transactions = browser.find_elements(By.LINK_TEXT, 'Details')
-    print(len(transactions))
     linkList = []
     for link in transactions:
         linkList.append(link.get_attribute("href"))
@@ -131,21 +129,24 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
     while not breakSwitch:
         browser.switch_to.window(browser.window_handles[0])
         if (len(linkList) == 0):
-            #linkVerifier = False
             browser.switch_to.frame(browser.find_element(By.TAG_NAME, "iframe"))
-            browser.find_element(By.XPATH, '//*[@id="ember1003"]/button[2]').click()
+            browser.find_element(By.XPATH, '//*[@id="ember1005"]/button[2]').click()
             try:
-                myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember980"]/table')))
+                myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember982"]/table')))
             except TimeoutException:
                 print("Browser failed to load transactions page in time, check your internet connection")
             transactions = browser.find_elements(By.LINK_TEXT, 'Details')
             for link in transactions:
                 linkList.append(link.get_attribute("href"))
         browser.switch_to.window(browser.window_handles[0])
+        #print(linkList)
         for i in range(len(linkList)):
-            browser.execute_script("window.open('');")
-            browser.switch_to.window(browser.window_handles[i + 1])
-            browser.get(linkList[i])
+            try:
+                browser.execute_script("window.open('');")
+                browser.switch_to.window(browser.window_handles[i + 1])
+                browser.get(linkList[i])
+            except IndexError:
+                break
         receiptLinks = []
         for j in range(1, 11):
             try:
