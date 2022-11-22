@@ -7,25 +7,98 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
-from datetime import date, timedelta, time
+from datetime import date, timedelta, time, datetime
 #import matplotlib.pyplot as plt
 import numpy as np
+import sys
 
-#Croissant Butter, Croissant Chocolate, Croissant Almond, Croissant Ham And Cheddar, Muffin Blueberry, Muffin Morning Glory, Cookie Chocolate Chip, Scone Blueberry, Coffee Cake, Cinnamon Bun, Scone Cheese and Cheddar, Scone Chocolate Chip, Bread Pumpkin, Pumpkin Cruffin
-#Croissant Butter, Croissant Chocolate, Croissant Almond, Croissant Ham And Cheddar, Muffin Blueberry, Muffin Morning Glory, Cookie Chocolate Chip, Scone Blueberry, Cinnamon Bun, Scone Cheese and Cheddar, Scone Chocolate Chip, Bread Pumpkin, Pumpkin Cruffin
+#Croissant Butter, Croissant Chocolate, Croissant Almond, Croissant Ham And Cheddar, Muffin Blueberry, Muffin Morning Glory, Cookie Chocolate Chip, Scone Blueberry, Scone Orange Cranberry, Scone Maple Walnut, Coffee Cake, Cinnamon Bun, Scone Cheese and Cheddar, Scone Chocolate Chip, Bread Pumpkin, Pumpkin Cruffin
+
+#Croissant Butter, Croissant Chocolate, Croissant Almond, Croissant Ham And Cheddar, Muffin Blueberry, Muffin Morning Glory, Cookie Chocolate Chip, Scone Blueberry, Scone Orange Cranberry, Scone Maple Walnut, Cinnamon Bun, Scone Chocolate Chip, Bread Pumpkin, Pumpkin Cruffin
 
 
 #TODO: plotting
 
+def getDatesAndProducts():
+    productList = ["Croissant Butter", "Croissant Chocolate", "Croissant Almond", "Croissant Ham And Cheddar", "Muffin Blueberry", "Muffin Morning Glory", "Cookie Chocolate Chip", "Scone Blueberry", "Scone Orange Cranberry", "Scone Maple Walnut", "Coffee Cake", "Cinnamon Bun", "Scone Cheese and Cheddar", "Scone Chocolate Chip", "Bread Pumpkin", "Pumpkin Cruffin"]
+    BOOLEANProductList = [False] * len(productList)
+    print("Please copy and paste the row from the spoilage sheet corresponding to the day you'd like analyzed: \n")
+    row = input()
+    row = row.split("\t")
+    #Croissant Butter
+    if row[13] == "0":
+        BOOLEANProductList[0] = True
+    #Croissant Chocolate
+    if row[14] == "0":
+        BOOLEANProductList[1] = True
+    #Croissant Almond
+    if row[15] == "0":
+        BOOLEANProductList[2] = True
+    #Croissant Ham And Cheddar
+    if row[16] == "0":
+        BOOLEANProductList[3] = True
+    #Muffin Blueberry
+    if row[17] == "0":
+        BOOLEANProductList[4] = True
+    #Muffin Morning Glory
+    if row[18] == "0":
+        BOOLEANProductList[5] = True
+    #Cookie Chocolate Chip
+    if row[19] == "0":
+        BOOLEANProductList[6] = True
+    #Scone Blueberry
+    if row[20] == "0":
+        BOOLEANProductList[7] = True
+    #Scone Orange Cranberry
+    if row[21] == "0":
+        BOOLEANProductList[8] = True
+    #Scone Maple Walnut
+    if row[22] == "0":
+        BOOLEANProductList[9] = True
+    #Coffee Cake
+    if row[24] == "0":
+        BOOLEANProductList[10] = True
+    #Cinnamon Bun
+    if row[35] == "0":
+        BOOLEANProductList[11] = True
+    #Scone Cheese and Cheddar
+    if row[36] == "0":
+        BOOLEANProductList[12] = True
+    #Scone Chocolate Chip
+    if row[37] == "0":
+        BOOLEANProductList[13] = True
+    #Bread Pumpkin
+    if row[40] == "0":
+        BOOLEANProductList[14] = True
+    #Pumpkin Cruffin
+    if row[42] == "0":
+        BOOLEANProductList[15] = True
+    finalList = []
+    for i in range(len(productList)):
+        if BOOLEANProductList[i]:
+            finalList.append(productList[i])
+    dateTemp = row[0].split(" ")[0].split("/")
+    formattedDate = date.fromisoformat(dateTemp[2] + "-" + dateTemp[0] + "-" + dateTemp[1])
+    tempTime = row[0].split(" ")[1].split(":")
+    if len(tempTime[0]) == 1:
+        tempTime[0] = "0" + tempTime[0]
+    formattedTime = time.fromisoformat(tempTime[0] + ":" + tempTime[1] + ":" + tempTime[2])
+    timeCutOff = time.fromisoformat("04:00:00")
+    if formattedTime < timeCutOff:
+        operatingDay = formattedDate
+    else:
+        operatingDay = formattedDate + timedelta(days = 1)
+    startTime = getStart(operatingDay)
+    endTime = getEnd(operatingDay)
+    return startTime, endTime, finalList
 
-def getStart():
-    today = date.today()
-    yesterday = str(today - timedelta(days = 1)).split("-")
+def getStart(operatingDay):
+    yesterday = str(operatingDay - timedelta(days = 1)).split("-")
     formatted = yesterday[1] + yesterday[2] + yesterday[0] + "800A"
     return formatted
 
-def getDate():
-    today = str(date.today()).split("-")
+def getEnd(operatingDay):
+    today = str(operatingDay).split("-")
     formatted = today[1] + today[2] + today[0] + "200A"
     return formatted
 
@@ -63,14 +136,9 @@ def graph(finalDict):
 def getTimes():
     print("""
 Welcome to the product sales tracker. My goal with this project is to find out when we sell out of specific items.
-
-IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS IN CLOVER!!!
     
     """)
-    print("Please enter the products you want to search for, separate by a comma and a space: ")
-    print()
-    vape = input()
-    productsToSearchFor = vape.split(", ")
+    startTime, endTime, productsToSearchFor = getDatesAndProducts()
     finalDict = {}
     for prod in productsToSearchFor:
         finalDict[prod] = ""
@@ -83,7 +151,7 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
     try:
         myElem = WebDriverWait(browser, 100).until(EC.presence_of_element_located((By.ID, "email-input")))
     except TimeoutException:
-        print("Browser failed to load log-in page in time, check your internet connection")
+        print("Browser failed to load log-in page in time, check your internet connection", file=sys.stderr)
     emailSection = browser.find_element(By.ID, "email-input")
     emailSection.send_keys("doda.midnight@thecorp.org")
     passwordSection = browser.find_element(By.ID, "password-input")
@@ -94,35 +162,35 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
     try:
         myElem = WebDriverWait(browser, 100).until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Transactions")))
     except TimeoutException:
-        print("Browser failed to load main page time, check your internet connection")
+        print("Browser failed to load main page time, check your internet connection", file=sys.stderr)
     reportingTab = browser.find_element(By.PARTIAL_LINK_TEXT, "Transactions")
     reportingTab.click()
     try:
         myElem = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.LINK_TEXT, 'Payments')))
     except TimeoutException:
-        print("Browser failed to load transactions page time, check your internet connection")
+        print("Browser failed to load transactions page time, check your internet connection", file=sys.stderr)
     browser.find_element(By.LINK_TEXT, "Payments").click()
     browser.switch_to.frame(browser.find_element(By.TAG_NAME, "iframe"))
     browser.find_element(By.LINK_TEXT, "Yesterday").click()
     sleep(1)
     startDate = browser.find_element(By.XPATH, '//*[@id="ember904"]/section/div[2]/div/div[1]/label')
     startDate.click()
-    browser.find_element(By.XPATH, '//*[@id="startDate-1"]').send_keys(getStart())
+    browser.find_element(By.XPATH, '//*[@id="startDate-1"]').send_keys(startTime)
     endDate = browser.find_element(By.XPATH, '//*[@id="ember904"]/section/div[2]/div/div[2]/label')
     endDate.click()
-    browser.find_element(By.XPATH, '//*[@id="endDate-2"]').send_keys(getDate())
+    browser.find_element(By.XPATH, '//*[@id="endDate-2"]').send_keys(endTime)
     sleep(5)
     browser.find_element(By.XPATH, '//*[@id="itemOptions-content"]').click()
     try:
         myElem = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember995"]/ul/li[2]/a')))
     except TimeoutException:
-        print("drop down failed")
+        print("drop down failed", file=sys.stderr)
     browser.find_element(By.XPATH, '//*[@id="ember995"]/ul/li[2]/a').click()
     sleep(5)
     try:
         myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember982"]/table')))
     except TimeoutException:
-        print("Browser failed to load transactions page in time, check your internet connection")
+        print("Browser failed to load transactions page in time, check your internet connection", file=sys.stderr)
     transactions = browser.find_elements(By.LINK_TEXT, 'Details')
     linkList = []
     for link in transactions:
@@ -136,7 +204,7 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
             try:
                 myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember982"]/table')))
             except TimeoutException:
-                print("Browser failed to load transactions page in time, check your internet connection")
+                print("Browser failed to load transactions page in time, check your internet connection", file=sys.stderr)
             transactions = browser.find_elements(By.LINK_TEXT, 'Details')
             for link in transactions:
                 linkList.append(link.get_attribute("href"))
@@ -160,15 +228,15 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
             try:
                 myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.TAG_NAME, "iframe")))
             except TimeoutException:
-                print("Browser failed to load transactions in time, check your internet connection")
+                print("Browser failed to load transactions in time, check your internet connection", file=sys.stderr)
             browser.switch_to.frame(browser.find_element(By.TAG_NAME, "iframe"))
             try:
                 myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember345"]/div[2]/div[3]/div[2]/div[1]/section/p[4]/a')))
                 receiptLinks.append(browser.find_element(By.XPATH, '//*[@id="ember345"]/div[2]/div[3]/div[2]/div[1]/section/p[4]/a').get_attribute("href"))
             except TimeoutException:
-                print("Failed transaction skipped")
+                print("Failed transaction skipped", file=sys.stderr)
             except NoSuchElementException:
-                print("Failed transaction skipped")
+                print("Failed transaction skipped", file=sys.stderr)
         while (len(browser.window_handles) > 1):
             browser.switch_to.window(browser.window_handles[1])
             browser.close()
@@ -182,7 +250,7 @@ IF YOU ARE GOING TO ENTER A PRODUCT NAME, MAKE SURE IT IS EXACTLY HOW IT APPEARS
             try:
                 myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.CLASS_NAME, 'line-item')))
             except TimeoutException:
-                print("Browser failed to load receipt in time")
+                print("Browser failed to load receipt in time", file=sys.stderr)
             products = browser.find_elements(By.CLASS_NAME, "line-item")
             time = browser.find_element(By.CLASS_NAME, "time").text
             for item in products:
