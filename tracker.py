@@ -17,7 +17,7 @@ import sys
 #Croissant Butter, Croissant Chocolate, Croissant Almond, Croissant Ham And Cheddar, Muffin Blueberry, Muffin Morning Glory, Cookie Chocolate Chip, Scone Blueberry, Scone Orange Cranberry, Scone Maple Walnut, Cinnamon Bun, Scone Chocolate Chip, Bread Pumpkin, Pumpkin Cruffin
 
 
-#TODO: plotting
+#TODO: make it work better and catch errors please
 
 def getDatesAndProducts():
     productList = ["Croissant Butter", "Croissant Chocolate", "Croissant Almond", "Croissant Ham And Cheddar", "Muffin Blueberry", "Muffin Morning Glory", "Cookie Chocolate Chip", "Scone Blueberry", "Scone Orange Cranberry", "Scone Maple Walnut", "Coffee Cake", "Cinnamon Bun", "Scone Cheese and Cheddar", "Scone Chocolate Chip", "Bread Pumpkin", "Pumpkin Cruffin"]
@@ -78,6 +78,8 @@ def getDatesAndProducts():
         if BOOLEANProductList[i]:
             finalList.append(productList[i])
     dateTemp = row[0].split(" ")[0].split("/")
+    if len(dateTemp[1]) == 1:
+        dateTemp[1] = "0" + dateTemp[1]
     formattedDate = date.fromisoformat(dateTemp[2] + "-" + dateTemp[0] + "-" + dateTemp[1])
     tempTime = row[0].split(" ")[1].split(":")
     if len(tempTime[0]) == 1:
@@ -173,10 +175,10 @@ Welcome to the product sales tracker. My goal with this project is to find out w
     browser.switch_to.frame(browser.find_element(By.TAG_NAME, "iframe"))
     browser.find_element(By.LINK_TEXT, "Yesterday").click()
     sleep(1)
-    startDate = browser.find_element(By.XPATH, '//*[@id="ember904"]/section/div[2]/div/div[1]/label')
+    startDate = browser.find_element(By.XPATH, '//*[@id="startDate-1"]')
     startDate.click()
     browser.find_element(By.XPATH, '//*[@id="startDate-1"]').send_keys(startTime)
-    endDate = browser.find_element(By.XPATH, '//*[@id="ember904"]/section/div[2]/div/div[2]/label')
+    endDate = browser.find_element(By.XPATH, '//*[@id="endDate-2"]')
     endDate.click()
     browser.find_element(By.XPATH, '//*[@id="endDate-2"]').send_keys(endTime)
     sleep(5)
