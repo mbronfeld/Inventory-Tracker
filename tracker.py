@@ -71,8 +71,8 @@ def getDatesAndProducts():
     if row[40] == "0":
         BOOLEANProductList[14] = True
     #Pumpkin Cruffin
-    if row[42] == "0":
-        BOOLEANProductList[15] = True
+    #if row[42] == "0":
+    #    BOOLEANProductList[15] = True
     finalList = []
     for i in range(len(productList)):
         if BOOLEANProductList[i]:
@@ -96,12 +96,14 @@ def getDatesAndProducts():
 
 def getStart(operatingDay):
     yesterday = str(operatingDay - timedelta(days = 1)).split("-")
-    formatted = yesterday[1] + yesterday[2] + yesterday[0] + "800A"
+    formatted = yesterday[1] + yesterday[2] + yesterday[0] + "300"
+    print("start date: ", formatted)
     return formatted
 
 def getEnd(operatingDay):
-    today = str(operatingDay).split("-")
-    formatted = today[1] + today[2] + today[0] + "200A"
+    day = str(operatingDay).split("-")
+    formatted = day[1] + day[2] + day[0] + "300"
+    print("end date: ", formatted)
     return formatted
 
 def graph(finalDict):
@@ -149,7 +151,7 @@ Welcome to the product sales tracker. My goal with this project is to find out w
     browser = webdriver.Chrome(options=options)
     delay = 100 #seconds
     browser.get("https://www.clover.com/dashboard/login")
-    #browser.maximize_window()
+    browser.maximize_window()
     try:
         myElem = WebDriverWait(browser, 100).until(EC.presence_of_element_located((By.ID, "email-input")))
     except TimeoutException:
@@ -173,16 +175,12 @@ Welcome to the product sales tracker. My goal with this project is to find out w
         print("Browser failed to load transactions page time, check your internet connection", file=sys.stderr)
     browser.find_element(By.LINK_TEXT, "Payments").click()
     browser.switch_to.frame(browser.find_element(By.TAG_NAME, "iframe"))
-    browser.find_element(By.LINK_TEXT, "Yesterday").click()
     sleep(1)
-    startDate = browser.find_element(By.XPATH, '//*[@id="startDate-1"]')
-    startDate.click()
     browser.find_element(By.XPATH, '//*[@id="startDate-1"]').send_keys(startTime)
-    endDate = browser.find_element(By.XPATH, '//*[@id="endDate-2"]')
-    endDate.click()
     browser.find_element(By.XPATH, '//*[@id="endDate-2"]').send_keys(endTime)
     sleep(5)
     browser.find_element(By.XPATH, '//*[@id="itemOptions-content"]').click()
+    #browser.find_element(By.XPATH, '//*[@id="ember958"]/section/div[2]/div/button').click()
     try:
         myElem = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember995"]/ul/li[2]/a')))
     except TimeoutException:
@@ -233,7 +231,7 @@ Welcome to the product sales tracker. My goal with this project is to find out w
                 print("Browser failed to load transactions in time, check your internet connection", file=sys.stderr)
             browser.switch_to.frame(browser.find_element(By.TAG_NAME, "iframe"))
             try:
-                myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember345"]/div[2]/div[3]/div[2]/div[1]/section/p[4]/a')))
+                myElem = WebDriverWait(browser, 15).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ember345"]/div[2]/div[3]/div[2]/div[1]/section/p[4]/a')))
                 receiptLinks.append(browser.find_element(By.XPATH, '//*[@id="ember345"]/div[2]/div[3]/div[2]/div[1]/section/p[4]/a').get_attribute("href"))
             except TimeoutException:
                 print("Failed transaction skipped", file=sys.stderr)
